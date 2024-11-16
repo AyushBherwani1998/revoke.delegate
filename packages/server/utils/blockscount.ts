@@ -1,13 +1,5 @@
-import { clsx, type ClassValue } from "clsx"
-import { imageOptimizer } from "next/dist/server/image-optimizer";
-import { twMerge } from "tailwind-merge"
 import { Chain } from "viem";
 import { baseSepolia, celo, celoAlfajores, lineaSepolia, mantleSepoliaTestnet, polygonAmoy, sepolia } from "viem/chains";
-
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
 
 export async function getBlockscountUrl(chain:Chain, transactionHash:string) {
     if(chain === sepolia) {

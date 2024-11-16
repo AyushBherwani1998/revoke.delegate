@@ -3,6 +3,7 @@ import { encodeFunctionData, erc20Abi } from "viem";
 import { getSmartAccountClient } from "./smartAccount";
 import { SmartAccount } from "viem/account-abstraction";
 import { encodeNonce } from "permissionless";
+import { getBlockscountUrl } from "../utils";
 
 export async function revokeApproval(approval: ApprovalSummary, smartAccount: SmartAccount) {
     const smartAccountClient = await getSmartAccountClient(smartAccount);
@@ -17,7 +18,7 @@ export async function revokeApproval(approval: ApprovalSummary, smartAccount: Sm
         sequence: BigInt(0),
     })
 
-    const hash = await smartAccountClient.sendUserOperation({
+    const hash = await smartAccountClient.sendTransaction({
         nonce: parallelNonce1,
         calls: [{
             to: approval.tokenAddress as `0x${string}`, 
@@ -26,7 +27,8 @@ export async function revokeApproval(approval: ApprovalSummary, smartAccount: Sm
         }],
     })
 
-    return hash
+
+    return getBlockscountUrl(smartAccount.client.chain!!,hash)
 }
 
 export async function approve( smartAccount: SmartAccount) {
