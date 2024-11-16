@@ -53,7 +53,7 @@ export default function page() {
         const smartAccount = await getSmartAccount(userChain, walletClient);
         setSmartAccount(smartAccount);
 
-        const approvalData = await walletApprovals(mainnet, '0xfC43f5F9dd45258b3AFf31Bdbe6561D97e8B71de');
+        const approvalData = await walletApprovals(userChain, smartAccount?.address);
         // approve(smartAccount).then((hash) => {
         //   console.log("Approved", hash);
         // });

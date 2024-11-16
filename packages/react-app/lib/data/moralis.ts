@@ -1,13 +1,14 @@
 import axios from "axios"
 import { ApprovalSummary } from "../interfaces/approval";
+import { baseSepolia, Chain, linea, lineaSepolia, mainnet, mantaSepoliaTestnet, polygonAmoy, sepolia } from "viem/chains";
 
-export async function getMoralisWalletApprovals(walletAddress: string): Promise<ApprovalSummary[]> {
+export async function getMoralisWalletApprovals(chain:Chain,walletAddress: string): Promise<ApprovalSummary[]> {
     try {
         const response = await axios.get(
             `https://deep-index.moralis.io/api/v2.2/wallets/${walletAddress}/approvals`, 
             {
                 params: {
-                    chain: '0x1',
+                    chain: `0x${chain.id.toString(16)}`,
                     limit: 100
                 },
                 headers: {
@@ -49,3 +50,5 @@ export async function getMoralisWalletApprovals(walletAddress: string): Promise<
         throw error;
     }
 }
+
+export const moralisSupportedChains = [sepolia, linea,mantaSepoliaTestnet, lineaSepolia, baseSepolia, polygonAmoy, mainnet,]
