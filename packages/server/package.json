@@ -13,6 +13,7 @@
   "dependencies": {
     "@curvegrid/multibaas-sdk": "^1.0.0-beta26",
     "@pushprotocol/restapi": "^1.7.29",
+    "@codefi/delegator-core-viem": "^0.4.0",
     "c-kzg": "^2.1.2",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.4",

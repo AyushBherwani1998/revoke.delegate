@@ -4,12 +4,14 @@ import { walletApprovals } from "./utils/approval";
 import { sepolia } from "viem/chains";
 import { ethers } from "ethers";
 import { PushAPI, CONSTANTS } from '@pushprotocol/restapi';
+import { createExecution, DelegationFramework, SINGLE_DEFAULT_MODE } from "@codefi/delegator-core-viem";
 
 
 const main = async () => {
     require('dotenv').config()
     const client = await transactionClient()    
     const exploitedAddress = '0xfba3912ca04dd458c843e2ee08967fc04f3579c2';
+    const dmAddress = "0x56D56e07e3d6Ee5a24e30203A37a0a460f42D7A3";
 
     const publicClient = createPublicClient({
         chain: sepolia,
@@ -34,20 +36,27 @@ const main = async () => {
                 functionName: "approve",
                 args: [exploitedAddress, 0n],
             });
-    
-            const calculatedGas = await publicClient.estimateGas({
-                account: approval.owner as `0x${string}`,
-                to: approval.tokenAddress as `0x${string}`,
-                data: approveData,
 
+            const execution = createExecution(approval.tokenAddress as `0x${string}`, 0n, approveData);
+
+            const reedemData = DelegationFramework.encode.redeemDelegations(
+                [[]],
+                [SINGLE_DEFAULT_MODE],
+                [[execution]]
+            );
+              
+            const calculatedGas = await publicClient.estimateGas({
+                account: '0x0297d4570023132Ea881c3244807Badb6cfB8F59',
+                to: dmAddress,
+                data: reedemData,
             })
     
             const transaction = client.signAndSubmitTransaction("ethereum", {
                 tx: {
                     from: '0x0297d4570023132Ea881c3244807Badb6cfB8F59',
-                    to: approval.tokenAddress as `0x${string}`,
+                    to: dmAddress,
                     value: '0',
-                    data: approveData,
+                    data: reedemData,
                     gas: Number(calculatedGas),
                     type: 0,
                 }
