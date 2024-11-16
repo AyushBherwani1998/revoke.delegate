@@ -35,7 +35,6 @@ export default function ApprovalCard() {
     className="w-full h-full object-cover object-top" >
     </img>
     </div>
-    {/* <button className=' h-10 border-2 border-green-500 fill-none p-1 text-sm !rounded-lg'>Revoke Now</button> */}
     <Button>Revoke now</Button>
      </div>
  </Card></div>
