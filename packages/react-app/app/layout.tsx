@@ -9,7 +9,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className='bg-gradient-to-b from-gray-950 from-80% to-green-900'>
         <AppProvider>{children}</AppProvider>
       </body>
     </html>
