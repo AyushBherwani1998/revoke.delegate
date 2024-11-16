@@ -3,6 +3,7 @@ import { Account, Chain, createPublicClient, createWalletClient, http, WalletCli
 import {createSmartAccountClient} from 'permissionless';
 import { createPaymasterClient, entryPoint07Address } from 'viem/account-abstraction';
 import { createPimlicoClient } from "permissionless/clients/pimlico";
+import { DELEGATOR_CONTRACTS, getDeleGatorEnv } from '../contracts/delegation';
 
 export async function getSmartAccount(chain: Chain, account: any) {
     
@@ -12,6 +13,7 @@ export async function getSmartAccount(chain: Chain, account: any) {
         deployParams: [account.account.address, [], [], []],
         deploySalt: '0x0',
         signatory: { walletClient: account },
+        environment: getDeleGatorEnv(DELEGATOR_CONTRACTS["1.1.0"][chain.id])
     });
 }
 

@@ -1,6 +1,6 @@
 import { SmartAccount } from "viem/account-abstraction";
 import { createCaveatBuilder, getDeleGatorEnvironment } from "@codefi/delegation-utils";
-import { createRootDelegation, signDelegation } from "@codefi/delegator-core-viem";
+import { createRootDelegation, DELEGATOR_CONTRACTS, signDelegation } from "@codefi/delegator-core-viem";
 import { sepolia } from "viem/chains";
 import { createWalletClient, custom, WalletClient } from "viem";
 import { DelegationStorageClient, DelegationStorageEnvironment } from "@codefi/delegator-core-viem";
@@ -31,7 +31,7 @@ export async function delegate(client: WalletClient ,smartAccount: SmartAccount)
     const rootDelegationSignature = await signDelegation(
         walletClient as any,
         rootDelegation, 
-        '0x56D56e07e3d6Ee5a24e30203A37a0a460f42D7A3',
+        DELEGATOR_CONTRACTS["1.1.0"][chain.id].DelegationManager as `0x${string}`,
         chain.id
     );
   
