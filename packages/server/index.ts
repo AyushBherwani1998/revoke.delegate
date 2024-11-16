@@ -6,10 +6,12 @@ import { ethers } from "ethers";
 import { PushAPI, CONSTANTS } from '@pushprotocol/restapi';
 import { createExecution, DelegationFramework, DelegationStorageClient, DelegationStorageEnvironment, DelegationStoreFilter, SINGLE_DEFAULT_MODE } from "@codefi/delegator-core-viem";
 import { getBlockscountUrl } from "./utils/blockscount";
+import { DELEGATOR_CONTRACTS } from "./utils/delegationContracts";
 
 require('dotenv').config()
 
 const main = async () => {
+    const chain = sepolia;
     const delegationStorageClient = new DelegationStorageClient({
         apiKey: process.env.MM_API_KEY as string,
         apiKeyId: process.env.MM_API_KEY_ID as string,    
@@ -25,10 +27,10 @@ const main = async () => {
 
     const client = await transactionClient()    
     const exploitedAddress = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
-    const dmAddress = "0x56D56e07e3d6Ee5a24e30203A37a0a460f42D7A3";
+    const dmAddress = DELEGATOR_CONTRACTS["1.1.0"][chain.id].DelegationManager;
 
     const publicClient = createPublicClient({
-        chain: sepolia,
+        chain: chain,
         transport: http(),
     })
 
@@ -61,7 +63,7 @@ const main = async () => {
               
             const calculatedGas = await publicClient.estimateGas({
                 account: '0x0297d4570023132Ea881c3244807Badb6cfB8F59',
-                to: dmAddress,
+                to: dmAddress as `0x${string}`,
                 data: reedemData,
             })
     
