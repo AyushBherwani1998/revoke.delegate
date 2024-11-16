@@ -5,6 +5,7 @@ import { sepolia } from "viem/chains";
 import { ethers } from "ethers";
 import { PushAPI, CONSTANTS } from '@pushprotocol/restapi';
 import { createExecution, DelegationFramework, DelegationStorageClient, DelegationStorageEnvironment, DelegationStoreFilter, SINGLE_DEFAULT_MODE } from "@codefi/delegator-core-viem";
+import { getBlockscountUrl } from "./utils/blockscount";
 
 require('dotenv').config()
 
@@ -80,7 +81,7 @@ const main = async () => {
                 userAlice.channel.send(['0x9ebFDccedb5001DC3d62099460A4B9B52BeC1A50'], {
                     notification: {
                       title: 'Token Approval Revoked',
-                      body: `There was an exploit for contract ${approval.spender}, and we have revoked the approval for the ${approval.tokenDetails?.name} token. Please check the hash ${tx.data.result.tx.hash} for more details.`,
+                      body: `There was an exploit for contract ${approval.spender}, and we have revoked the approval for the ${approval.tokenDetails?.name} token. Please check the hash ${getBlockscountUrl(publicClient.chain, tx.data.result.tx.hash!)} for more details.`,
                     },
                     channel: '0x9ebFDccedb5001DC3d62099460A4B9B52BeC1A50'
                   })
