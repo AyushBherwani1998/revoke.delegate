@@ -9,7 +9,7 @@ import {
   darkTheme,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider, createConfig, http } from 'wagmi';
-import { rootstock, unichainSepolia, mantle, zircuit, base, linea, morphSepolia, scroll, mainnet, polygon, celo ,  celoAlfajores } from 'wagmi/chains';
+import { rootstock, unichainSepolia, mantle, zircuit, base, linea, morphSepolia, scroll, mainnet, polygon, celo ,  celoAlfajores, sepolia, lineaSepolia } from 'wagmi/chains';
 
 
 import Layout from '../components/Layout';
@@ -28,10 +28,12 @@ const connectors = connectorsForWallets(
   }
 );
 
-const config = createConfig({
+export const config = createConfig({
   connectors,
-  chains: [rootstock, unichainSepolia, mantle, zircuit, base, linea, morphSepolia, scroll, mainnet, polygon, celo ,  celoAlfajores],
+  chains: [sepolia, lineaSepolia, rootstock, unichainSepolia, mantle, zircuit, base, linea, morphSepolia, scroll, mainnet, polygon, celo ,  celoAlfajores],
   transports: {
+    [sepolia.id]:http(),
+    [lineaSepolia.id]:http(),
     [mainnet.id]:http(),
     [rootstock.id]:http(),
     [unichainSepolia.id]:http(),

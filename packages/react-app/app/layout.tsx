@@ -1,6 +1,10 @@
 import '@/styles/globals.css';
 
 import { AppProvider } from '@/providers/AppProvider';
+import { loadEnvConfig } from '@next/env'
+ 
+const projectDir = process.cwd()
+loadEnvConfig(projectDir)
 
 export default function RootLayout({
   children,
