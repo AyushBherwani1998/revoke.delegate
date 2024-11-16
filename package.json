@@ -1,0 +1,36 @@
+{
+  "author": "Ayush & Ash",
+  "bugs": {
+    "url": "https://github.com/celo-org/celo-composer/issues"
+  },
+  "description": "Custom Celo Composer project.",
+  "homepage": "https://github.com/celo-org/celo-composer/blob/main/README.md",
+  "keywords": [
+    "celo-composer",
+    "celo"
+  ],
+  "license": "MIT",
+  "name": "revoke-delegate",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/celo-org/celo-composer.git"
+  },
+  "scripts": {
+    "react-app:dev": "yarn workspace @revoke-delegate/react-app dev",
+    "react-app:build": "yarn workspace @revoke-delegate/react-app build",
+    "react-app:start": "yarn workspace @revoke-delegate/react-app start",
+    "react-app:lint": "yarn workspace @revoke-delegate/react-app lint",
+    "hardhat:compile": "yarn workspace @revoke-delegate/hardhat compile",
+    "hardhat:tsc": "yarn workspace @revoke-delegate/hardhat tsc",
+    "hardhat:build": "yarn workspace @revoke-delegate/hardhat build",
+    "hardhat:clean": "yarn workspace @revoke-delegate/hardhat clean",
+    "hardhat:run:node": "yarn workspace @revoke-delegate/hardhat run:node",
+    "hardhat:test": "yarn workspace @revoke-delegate/hardhat test",
+    "hardhat:prettier": "yarn workspace @revoke-delegate/hardhat prettier"
+  },
+  "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ]
+}
