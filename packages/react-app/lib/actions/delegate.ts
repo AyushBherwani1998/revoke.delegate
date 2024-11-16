@@ -1,9 +1,9 @@
 import { SmartAccount } from "viem/account-abstraction";
-import { getSmartAccountClient } from "./smartAccount";
 import { createCaveatBuilder, getDeleGatorEnvironment } from "@codefi/delegation-utils";
 import { createRootDelegation, signDelegation } from "@codefi/delegator-core-viem";
 import { sepolia } from "viem/chains";
 import { createWalletClient, custom, WalletClient } from "viem";
+import { DelegationStorageClient, DelegationStorageEnvironment } from "@codefi/delegator-core-viem";
 
 export async function delegate(client: WalletClient ,smartAccount: SmartAccount) {
     const chain = smartAccount.client.chain ?? sepolia;
@@ -40,5 +40,12 @@ export async function delegate(client: WalletClient ,smartAccount: SmartAccount)
         signature: rootDelegationSignature,
     };
 
-    console.log(rootSignedDelegation);
+    const delegationStorageClient = new DelegationStorageClient({
+        apiKey: process.env.NEXT_PUBLIC_MM_API_KEY as string,
+        apiKeyId: process.env.NEXT_PUBLIC_MM_API_KEY_ID as string,    
+        environment: DelegationStorageEnvironment.dev
+    });
+
+    const hash = await delegationStorageClient.storeDelegation(rootSignedDelegation);
+    console.log("Stored delegation with hash:", hash);
 }
