@@ -4,13 +4,26 @@ import { walletApprovals } from "./utils/approval";
 import { sepolia } from "viem/chains";
 import { ethers } from "ethers";
 import { PushAPI, CONSTANTS } from '@pushprotocol/restapi';
-import { createExecution, DelegationFramework, SINGLE_DEFAULT_MODE } from "@codefi/delegator-core-viem";
+import { createExecution, DelegationFramework, DelegationStorageClient, DelegationStorageEnvironment, DelegationStoreFilter, SINGLE_DEFAULT_MODE } from "@codefi/delegator-core-viem";
 
+require('dotenv').config()
 
 const main = async () => {
-    require('dotenv').config()
+    const delegationStorageClient = new DelegationStorageClient({
+        apiKey: process.env.MM_API_KEY as string,
+        apiKeyId: process.env.MM_API_KEY_ID as string,    
+        environment: DelegationStorageEnvironment.dev
+    });
+
+    const delegations = await delegationStorageClient.fetchDelegations(
+        '0x0297d4570023132Ea881c3244807Badb6cfB8F59', 
+        DelegationStoreFilter.Received
+    );
+
+    console.log(delegations)
+
     const client = await transactionClient()    
-    const exploitedAddress = '0xfba3912ca04dd458c843e2ee08967fc04f3579c2';
+    const exploitedAddress = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
     const dmAddress = "0x56D56e07e3d6Ee5a24e30203A37a0a460f42D7A3";
 
     const publicClient = createPublicClient({
@@ -24,9 +37,9 @@ const main = async () => {
     const userAlice = await PushAPI.initialize(signer, {
         env: CONSTANTS.ENV.STAGING,
     });
-
-    const approvals = await walletApprovals(publicClient, '0x9ebFDccedb5001DC3d62099460A4B9B52BeC1A50');
-
+    for (const delegation of delegations) {
+    const approvals = await walletApprovals(publicClient, delegation.delegator);
+    console.log(approvals)
     for (const approval of approvals) {
         if (approval.spender.toLowerCase() === exploitedAddress.toLowerCase()) {
             console.log("Token Exploited", approval.tokenAddress, approval.spender)
@@ -40,7 +53,7 @@ const main = async () => {
             const execution = createExecution(approval.tokenAddress as `0x${string}`, 0n, approveData);
 
             const reedemData = DelegationFramework.encode.redeemDelegations(
-                [[]],
+                [[delegation]],
                 [SINGLE_DEFAULT_MODE],
                 [[execution]]
             );
@@ -57,7 +70,7 @@ const main = async () => {
                     to: dmAddress,
                     value: '0',
                     data: reedemData,
-                    gas: Number(calculatedGas),
+                    gas: Number(calculatedGas) * 1.4,
                     type: 0,
                 }
             })
@@ -72,6 +85,7 @@ const main = async () => {
                     channel: '0x9ebFDccedb5001DC3d62099460A4B9B52BeC1A50'
                   })
             })    
+        }
         }
     }
 
