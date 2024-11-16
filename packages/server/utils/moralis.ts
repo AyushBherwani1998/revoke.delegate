@@ -1,5 +1,6 @@
 import axios from "axios"
 import { ApprovalSummary } from "../interfaces/approval";
+import { baseSepolia, lineaSepolia, mantaSepoliaTestnet, polygonAmoy, sepolia } from "viem/chains";
 
 export async function getMoralisWalletApprovals(walletAddress: string): Promise<ApprovalSummary[]> {
     try {
@@ -45,3 +46,5 @@ export async function getMoralisWalletApprovals(walletAddress: string): Promise<
         throw error;
     }
 }
+
+export const moralisSupportedChains = [sepolia, mantaSepoliaTestnet, lineaSepolia, baseSepolia, polygonAmoy]
