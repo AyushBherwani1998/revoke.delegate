@@ -26,6 +26,8 @@ import { config } from '@/providers/AppProvider';
 import { SmartAccount } from 'viem/account-abstraction';
 import { approve, revokeApproval } from '@/lib/actions/revoke';
 import { delegate } from '@/lib/actions/delegate';
+import { mainnet } from 'viem/chains';
+import { Badge } from '@/components/ui/badge';
 
 
 export default function page() {
@@ -34,6 +36,7 @@ export default function page() {
 
   const userAddress = address;
   const userChain = isConnected ? chain : null;
+
   const [smartAccount, setSmartAccount] = useState<SmartAccount | null>(null);
   const [approvals, setApprovals] = useState<ApprovalSummary[]>([]);
 
@@ -50,7 +53,7 @@ export default function page() {
         const smartAccount = await getSmartAccount(userChain, walletClient);
         setSmartAccount(smartAccount);
 
-        const approvalData = await walletApprovals(userChain, smartAccount.address);
+        const approvalData = await walletApprovals(mainnet, '0xfC43f5F9dd45258b3AFf31Bdbe6561D97e8B71de');
         // approve(smartAccount).then((hash) => {
         //   console.log("Approved", hash);
         // });
@@ -63,11 +66,10 @@ export default function page() {
 
 
   return (
-    <div>
-    
-<div className='flex flex-row'>
+    <div className='dark p-4'>
+<div className='flex flex-col-reverse md:flex-row lg:flex-row'>
     <div className='flex flex-col gap-4'>
-      <p className="text-m text-muted-foreground">{userChain?.name} • {smartAccount?.address}</p>
+      <p className="scroll-m-20 text-l font-semibold tracking-tight text-muted-foreground">Smart Account • {smartAccount?.address.slice(0, 4) + '...' + smartAccount?.address.slice(-4)}</p> 
       <div className='flex flex-row gap-4 items-baseline'>
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{approvals.length} Approvals</h3>
         <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-red-600">at risk</h4>
@@ -77,35 +79,39 @@ export default function page() {
     </div>
      <Image src="/pepe-risk.svg" alt="pepe-risk" width={32} height={32} style={{ width: '10rem', height: '10rem' }}/>
      </div>
-     <Button onClick={() => delegate(client as any, smartAccount!!)}>Delegate all approvals</Button>
+     <Button className='mt-4' onClick={() => delegate(client as any, smartAccount!!)}>Delegate all approvals</Button>
 
-    <div className='grid grid-cols-3 gap-12 pt-12'>
+    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 pt-12'>
     {approvals
       .map((approvals, index: number) => (
-        <Card className="min-w-[340px]" key={index}>
+        <Card className="dark" key={index}>
         <div className=' p-6 pb-3 flex flex-row inline-block align-middle gap-1 border-b-2'>
            <p className='font-bold'>{approvals.tokenDetails?.name}</p>
-           <p className='text-zinc-400'>• {approvals.valueAtRisk} USDC at Risk</p>  {/* {value_at_risk}+{token_ticker} */}
+           {approvals.valueAtRisk != null && (
+             <p className='text-zinc-400'>• {parseFloat(approvals.valueAtRisk.toString() || '0.00').toFixed(2)} USD at Risk</p>  
+           )}
         </div>
          <div className='flex flex-row gap-4 pt-4'>
-         <CardContent>
+         <CardContent className='w-1/2'>
            <p className='text-zinc-400 text-sm pb-1'>Approved Amount</p>
-           <p className='text-sm'>{BigInt(approvals.value) === maxUint256 || approvals.value > 10000
+           <p className='text-sm'>{approvals.value > 10000
                   ? "Unlimited"
                   : approvals.value.toString()} {approvals.tokenDetails?.symbol}</p> {/* {amount} + {ticker} */}
          </CardContent>
-         <CardContent >
+         <CardContent className='w-1/2' >
            <p className='text-zinc-400 text-sm pb-1'>Spender</p>
-           <p className='text-sm'>{approvals.spender}</p> {/* {owner} */}
+           <p className='text-sm'>
+             {approvals.spender.slice(0, 4) + '...' + approvals.spender.slice(-4)}
+           </p> 
          </CardContent>
          </div>
          <div className='pl-4 pr-4 flex flex-row gap-16'>
         <div className="overflow-hidden h-[72px] w-[96px]">
-          <img src={approvals.tokenDetails?.logoUrl}  
-          className="w-full h-full object-cover object-top" >
+          <img src={approvals.tokenDetails?.logoUrl || '/fallback-token.png'}  
+          className="w-full h-full object-cover object-top rounded-t-full" >
           </img>
           </div>
-          <Button onClick={() => revokeApproval(approvals, smartAccount!!)}>Revoke now</Button>
+          <Button variant={'outline'} onClick={() => revokeApproval(approvals, smartAccount!!)}>Revoke now</Button>
            </div>
        </Card>
   ))}  

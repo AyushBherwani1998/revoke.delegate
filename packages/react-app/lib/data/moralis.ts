@@ -7,7 +7,7 @@ export async function getMoralisWalletApprovals(walletAddress: string): Promise<
             `https://deep-index.moralis.io/api/v2.2/wallets/${walletAddress}/approvals`, 
             {
                 params: {
-                    chain: 'sepolia',
+                    chain: '0x1',
                     limit: 100
                 },
                 headers: {
@@ -18,21 +18,25 @@ export async function getMoralisWalletApprovals(walletAddress: string): Promise<
         );
 
         // Process the approvals
-        const approvals = response.data.result.map((approval: any) => ({
-            owner: walletAddress,
-            transactionHash: approval.transaction_hash,
-            tokenAddress: approval.token.address,
-            spender: approval.spender.address,
-            value: approval.value_formatted,
-            valueAtRisk: approval.token.usd_at_risk,
-            tokenDetails: {
-                name: approval.token.name,
-                symbol: approval.token.symbol,
-                decimals: approval.token.decimals,
-                usdPrice: approval.token.usd_price,
-                logoUrl: approval.token.logoUrl,
+        const approvals = response.data.result.map((approval: any) => {
+            if(approval.value !== undefined ) {
+                return {
+                    owner: walletAddress,
+                    transactionHash: approval.transaction_hash,
+                    tokenAddress: approval.token.address,
+                    spender: approval.spender.address,
+                    value: approval.value_formatted ?? approval.value ?? 0,
+                    valueAtRisk: approval.token.usd_at_risk,
+                    tokenDetails: {
+                        name: approval.token.name,
+                        symbol: approval.token.symbol,
+                        decimals: approval.token.decimals,
+                        usdPrice: approval.token.usd_price,
+                        logoUrl: approval.token.logo,
+                    }
+                }
             }
-        }));
+        });
 
         return approvals;
 

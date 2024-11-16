@@ -28,8 +28,9 @@ export default function Header() {
                   <Image
                     className="block h-12 w-auto sm:block lg:block"
                     src="/revoke-logo.png"
-                    width="96"
-                    height="96"
+                    sizes="(max-width: 380px) 100vw, 380px"
+                    width={96}
+                    height={96}
                     alt="Logo"
                   />
                 </div>
