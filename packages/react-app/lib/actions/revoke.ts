@@ -1,5 +1,5 @@
 import { ApprovalSummary } from "../interfaces/approval";
-import { encodeFunctionData, erc20Abi } from "viem";
+import { encodeFunctionData, erc20Abi, parseEther } from "viem";
 import { getSmartAccountClient } from "./smartAccount";
 import { SmartAccount } from "viem/account-abstraction";
 import { encodeNonce } from "permissionless";
@@ -37,7 +37,7 @@ export async function approve( smartAccount: SmartAccount) {
     const revokeData = encodeFunctionData({
         abi: erc20Abi,
         functionName: 'approve',
-        args: ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8", BigInt(1000000000000000000000000)],
+        args: ["0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238", BigInt(1000)],
     })
 
     const parallelNonce1 = encodeNonce({

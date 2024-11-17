@@ -43,7 +43,7 @@ export default function page() {
   const [isLoadingRevoke, setIsLoadingRevoke] = useState(false);
   const [isLoadingDelegate, setIsLoadingDelegate] = useState(false);
 
-  const [isRevoke, setRevoke] = useState(true);
+  const [isRevoke, setRevoke] = useState(false);
   const [isDelegate, setDelegate] = useState(false);
 
   useEffect(() => {
@@ -73,6 +73,7 @@ export default function page() {
   const revoke = (approval: ApprovalSummary ) => {
     setIsLoadingRevoke(true);
     revokeApproval(approval, smartAccount!!).then((value) => {
+      setIsLoadingRevoke(false);
       setRevoke(true);
     }).catch((error) => {
       setIsLoadingRevoke(false);
@@ -82,6 +83,7 @@ export default function page() {
   const delegateRevoke = () => {
     setIsLoadingDelegate(true);
     delegate(client as any, smartAccount!!).then((value) => {
+      setIsLoadingDelegate(false);
       setDelegate(true);
     }).catch((error) => {
       setIsLoadingDelegate(false);
@@ -92,7 +94,7 @@ export default function page() {
   return (
     <div className='dark p-4'>
       {(isLoadingRevoke || isLoadingDelegate) && 
-      <div className='flex flex-col-reverse items-center justify-center'>
+      <div className='flex flex-col-reverse mx-auto my-auto'>
         <div className='flex flex-row gap-2'>
         <p className='scroll-m-20 text-2xl font-semibold tracking-tight'>Preparing to revoke your approval(s)</p>
         <div className="flex space-x-1">
@@ -105,13 +107,13 @@ export default function page() {
       </div>}
 
         {(isRevoke || isDelegate) && 
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-4 items-center'>
         <img src='/happy-pepe.svg' className='ml-2 w-[12rem] h-auto'></img>
         <p>Your Transaction is successful</p>
         <Button onClick={() => {setRevoke(false), setDelegate(false)}}>Manage your Approvals</Button>
         
         </div>}
-{!(isRevoke || isLoadingDelegate || isLoadingRevoke || isDelegate) &&
+      {!(isRevoke || isLoadingDelegate || isLoadingRevoke || isDelegate) &&
 <div>
 <div className='flex flex-col-reverse md:flex-row lg:flex-row'>
     <div className='flex flex-col gap-4'>
@@ -125,7 +127,7 @@ export default function page() {
     </div>
      <Image src="/pepe-risk.svg" alt="pepe-risk" width={32} height={32} style={{ width: '10rem', height: '10rem' }}/>
      </div>
-     <Button className='mt-4' onClick={() => delegateRevoke()}>Delegate all approvals</Button>
+     <Button className='mt-4' onClick={delegateRevoke}>Delegate all approvals</Button>
 
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 pt-12'>
     {approvals
