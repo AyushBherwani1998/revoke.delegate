@@ -12,21 +12,22 @@ require('dotenv').config()
 
 const main = async () => {
     const chain = sepolia;
+
     const delegationStorageClient = new DelegationStorageClient({
         apiKey: process.env.MM_API_KEY as string,
         apiKeyId: process.env.MM_API_KEY_ID as string,    
         environment: DelegationStorageEnvironment.dev
     });
 
-    const delegations = await delegationStorageClient.fetchDelegations(
+    const delegations = (await delegationStorageClient.fetchDelegations(
         '0x0297d4570023132Ea881c3244807Badb6cfB8F59', 
         DelegationStoreFilter.Received
-    );
+    ));
 
-    console.log(delegations)
+    
 
     const client = await transactionClient()    
-    const exploitedAddress = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
+    const exploitedAddress = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238';
     const dmAddress = DELEGATOR_CONTRACTS["1.1.0"][chain.id].DelegationManager;
 
     const publicClient = createPublicClient({
@@ -40,6 +41,7 @@ const main = async () => {
     const userAlice = await PushAPI.initialize(signer, {
         env: CONSTANTS.ENV.STAGING,
     });
+
     for (const delegation of delegations) {
     const approvals = await walletApprovals(publicClient, delegation.delegator);
     console.log(approvals)
@@ -73,7 +75,7 @@ const main = async () => {
                     to: dmAddress,
                     value: '0',
                     data: reedemData,
-                    gas: Number(calculatedGas) * 1.4,
+                    gas: Math.round(Number(calculatedGas) * 1.4),
                     type: 0,
                 }
             })
